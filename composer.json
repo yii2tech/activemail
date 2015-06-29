@@ -1,0 +1,33 @@
+{
+    "name": "yii2tech/activemail",
+    "description": "Project installation support extension for the Yii2 framework",
+    "keywords": ["yii2", "mail", "email", "active", "model"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yii2tech/activemail/issues",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "https://github.com/yii2tech/activemail/wiki",
+        "source": "https://github.com/yii2tech/activemail"
+    },
+    "authors": [
+        {
+            "name": "Paul Klimov",
+            "email": "klimov.paul@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "suggest": {
+        "yiisoft/yii2-swiftmailer": "you need this package, if you wish to setup crontab during project installation"
+    },
+    "autoload": {
+        "psr-4": { "yii2tech\\activemail\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
