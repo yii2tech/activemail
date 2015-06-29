@@ -5,14 +5,14 @@ namespace yii2tech\tests\unit\activemail;
 use yii2tech\activemail\TemplateStorage;
 
 /**
- * Unit test for {@link BaseStorage}
- * @see BaseStorage
+ * Unit test for [[TemplateStorage]]
+ * @see TemplateStorage
  */
 class TemplateStorageTest extends TestCase
 {
     public function testGetTemplate()
     {
-        $storage = new TestBaseStorage();
+        $storage = new TestTemplateStorage();
 
         $templateData = $storage->getTemplate('existing');
         $this->assertNotEmpty($templateData, 'Unable to get existing template');
@@ -26,7 +26,7 @@ class TemplateStorageTest extends TestCase
      */
     public function testGetTemplateCached()
     {
-        $storage = new TestBaseStorage();
+        $storage = new TestTemplateStorage();
 
         $templateName = 'existing';
 
@@ -42,19 +42,22 @@ class TemplateStorageTest extends TestCase
 }
 
 /**
- * Mock up for BaseStorage
+ * Mock up for TemplateStorage
  */
-class TestBaseStorage extends TemplateStorage
+class TestTemplateStorage extends TemplateStorage
 {
     const EXISTING_TEMPLATE_NAME = 'existing';
 
+    /**
+     * @inheritdoc
+     */
     protected function findTemplate($name)
     {
         if ($name == self::EXISTING_TEMPLATE_NAME) {
-            return array(
+            return [
                 'subject' => 'Test subject ' . uniqid(),
                 'body' => 'Test body' . uniqid(),
-            );
+            ];
         } else {
             return null;
         }

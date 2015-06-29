@@ -2,6 +2,7 @@
 
 namespace yii2tech\tests\unit\activemail;
 
+use yii\db\Connection;
 use yii2tech\activemail\TemplateStorageDb;
 
 /**
@@ -11,49 +12,54 @@ use yii2tech\activemail\TemplateStorageDb;
 class TemplateStorageDbTest extends TestCase
 {
     /**
-     * @var CDbConnection database connection used for the test running.
+     * @var Connection database connection used for the test running.
      */
     protected $_db;
 
     public function setUp()
     {
-        $db = $this->getDbConnection();
-        $this->createTestTables($db);
+        $this->mockApplication([
+            'components' => [
+                'db' => $this->getDb()
+            ],
+        ]);
+        $this->createTestTables();
     }
 
     /**
-     * @return CDbConnection test database connection
+     * @return Connection test database connection
      */
-    protected function getDbConnection()
+    protected function getDb()
     {
         if ($this->_db === null) {
-            $this->_db = new CDbConnection('sqlite::memory:');
-            $this->_db->active = true;
+            $this->_db = new Connection(['dsn' => 'sqlite::memory:']);
+            $this->_db->open();
         }
         return $this->_db;
     }
 
     /**
      * Creates test database tables.
-     * @param CDbConnection $db database connection
      */
-    protected function createTestTables($db)
+    protected function createTestTables()
     {
+        $db = $this->getDb();
+
         $table = 'EmailTemplate';
-        $columns = array(
+        $columns = [
             'id' => 'pk',
             'name' => 'string',
             'subject' => 'string',
             'bodyHtml' => 'text',
-        );
-        $db->createCommand()->createTable($table, $columns);
+        ];
+        $db->createCommand()->createTable($table, $columns)->execute();
 
-        $columns = array(
+        $columns = [
             'name' => 'test',
             'subject' => 'test subject',
             'bodyHtml' => 'test body HTML',
-        );
-        $db->createCommand()->insert($table, $columns);
+        ];
+        $db->createCommand()->insert($table, $columns)->execute();
     }
 
     /**
@@ -62,7 +68,7 @@ class TemplateStorageDbTest extends TestCase
     protected function createTestStorage()
     {
         $storage = new TemplateStorageDb();
-        $storage->db = $this->getDbConnection();
+        $storage->db = $this->getDb();
         return $storage;
     }
 

@@ -8,9 +8,8 @@
 namespace yii2tech\activemail;
 
 use Yii;
-use yii\base\InvalidParamException;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii2tech\activemail\TemplateStorage;
 
 /**
  * ActiveMessage represents particular mail sending process.
@@ -304,26 +303,28 @@ abstract class ActiveMessage extends Model
      * Sends this message
      * @param boolean $runValidation whether to perform validation before sending the message.
      * @return boolean success.
-     * @throws InvalidParamException on failure
+     * @throws InvalidConfigException on failure
      */
     public function send($runValidation = true)
     {
         if ($runValidation && !$this->validate()) {
-            throw new InvalidParamException('Unable to send message: ' . $this->getErrorSummary());
+            throw new InvalidConfigException('Unable to send message: ' . $this->getErrorSummary());
         }
         $data = $this->composeTemplateData();
-        $data['activeMessage'] = $this;
 
         //$this->beforeCompose($mailMessage, $data);
 
         $this->applyTemplate();
         $this->applyParse($data);
 
-        $mailMessage = $this->getMailer()->compose($this->viewName(), $data);
-        $mailMessage->setSubject($this->getSubject());
-        $mailMessage->setTo($this->getTo());
-        $mailMessage->setFrom($this->getFrom());
-        $mailMessage->setReplyTo($this->getFrom());
+        $data['activeMessage'] = $this;
+
+        $mailMessage = $this->getMailer()
+            ->compose($this->viewName(), $data)
+            ->setSubject($this->getSubject())
+            ->setTo($this->getTo())
+            ->setFrom($this->getFrom())
+            ->setReplyTo($this->getFrom());
 
         if ($this->beforeSend($mailMessage)) {
             return $this->getMailer()->send($mailMessage);

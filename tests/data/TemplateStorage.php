@@ -1,14 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Paul
- * Date: 29.06.15
- * Time: 16:26
- */
 
 namespace yii2tech\tests\unit\activemail\data;
 
 
-class TemplateStorage {
-
-} 
+class TemplateStorage extends \yii2tech\activemail\TemplateStorage
+{
+    /**
+     * @inheritdoc
+     */
+    protected function findTemplate($name)
+    {
+        if ($name === 'TestActiveMessage') {
+            return [
+                'subject' => 'Template subject {subjectPlaceholder}',
+                'bodyHtml' => 'Template body {bodyPlaceholder}',
+            ];
+        } else {
+            return null;
+        }
+    }
+}

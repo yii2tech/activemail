@@ -4,7 +4,7 @@ namespace yii2tech\tests\unit\activemail;
 
 use Yii;
 use yii2tech\activemail\ActiveMessage;
-use yii2tech\activemail\template\BaseStorage;
+use yii2tech\tests\unit\activemail\data\TestActiveMessage;
 
 /**
  * Unit test for {@link ActiveMessage}
@@ -12,50 +12,6 @@ use yii2tech\activemail\template\BaseStorage;
  */
 class ActiveMessageTest extends TestCase
 {
-    /**
-     * @var array backup for application components
-     */
-    protected $componentsBackup = array();
-
-    public function setUp()
-    {
-        foreach (array('mail', 'mailTemplateStorage') as $componentName) {
-            if (Yii::app()->hasComponent($componentName)) {
-                $this->componentsBackup[$componentName] = Yii::app()->getComponent($componentName, false);
-            }
-        }
-        Yii::app()->setComponent('mail', $this->createTestMailComponent(), false);
-        Yii::app()->setComponent('mailTemplateStorage', $this->createTestMailTemplateStorageComponent(), false);
-    }
-
-    public function tearDown()
-    {
-        foreach ($this->componentsBackup as $name => $component) {
-            Yii::app()->setComponent($name, $component, false);
-        }
-    }
-
-    /**
-     * @return Mailer test mail component instance.
-     */
-    protected function createTestMailComponent()
-    {
-        $component = new Mailer();
-        $component->view = new TestMailView();
-        return $component;
-    }
-
-    /**
-     * @return BaseStorage test mail template storage component instance.
-     */
-    protected function createTestMailTemplateStorageComponent()
-    {
-        $component = new TestMailTemplateStorage();
-        return $component;
-    }
-
-    // Tests :
-
     public function testSetGet()
     {
         $message = new TestActiveMessage();
@@ -104,61 +60,5 @@ class ActiveMessageTest extends TestCase
 
         $serializedMessage = serialize($message);
         $this->assertEquals($message, unserialize($serializedMessage), 'Unable to serialize/unserialize message!');
-    }
-}
-
-class TestActiveMessage extends ActiveMessage
-{
-    public $userId = 10;
-
-    public function defaultSubject()
-    {
-        return 'Test default subject';
-    }
-
-    public function defaultBodyHtml()
-    {
-        return 'Test default body HTML';
-    }
-
-    protected function composeTemplateData()
-    {
-        return array(
-            'subjectPlaceholder' => 'subjectParsed',
-            'bodyPlaceholder' => 'bodyParsed',
-        );
-    }
-
-    public function defaultFrom()
-    {
-        return 'noreply@testdomain.com';
-    }
-
-    public function defaultTo()
-    {
-        return 'noreply@testdomain.com';
-    }
-}
-
-class TestMailTemplateStorage extends BaseStorage
-{
-    protected function findTemplate($name)
-    {
-        if ($name == 'TestActiveMessage') {
-            return array(
-                'subject' => 'Template subject {subjectPlaceholder}',
-                'bodyHtml' => 'Template body {bodyPlaceholder}',
-            );
-        } else {
-            return null;
-        }
-    }
-}
-
-class TestMailView extends View
-{
-    public function render($view, $data = null, $return = false)
-    {
-        return var_export($data, true);
     }
 }

@@ -8,6 +8,9 @@
 namespace yii2tech\activemail;
 
 use Yii;
+use yii\db\Connection;
+use yii\db\Query;
+use yii\di\Instance;
 
 /**
  * TemplateStorageDb
@@ -18,7 +21,9 @@ use Yii;
 class TemplateStorageDb extends TemplateStorage
 {
     /**
-     * @var string|CDbConnection database connection component.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
+     * After the TemplateStorageDb object is created, if you want to change this property, you should only assign it
+     * with a DB connection object.
      */
     public $db = 'db';
     /**
@@ -30,22 +35,19 @@ class TemplateStorageDb extends TemplateStorage
      * Only these fields will be selected while querying template row.
      * You may adjust fields list according to the actual table schema.
      */
-    public $templateDataFields = array('subject', 'bodyHtml');
+    public $templateDataFields = ['subject', 'bodyHtml'];
     /**
      * @var string name of the mail template table field, which stores the template name.
      */
     public $templateNameField = 'name';
 
     /**
-     * @return CDbConnection database connection instance.
+     * @inheritdoc
      */
-    public function getDbConnection()
+    public function init()
     {
-        if (is_object($this->db)) {
-            return $this->db;
-        } else {
-            return Yii::app()->getComponent($this->db);
-        }
+        parent::init();
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 
     /**
@@ -53,11 +55,12 @@ class TemplateStorageDb extends TemplateStorage
      */
     protected function findTemplate($name)
     {
-        $template = $this->getDbConnection()->createCommand()
+        $query = new Query();
+        $template = $query
             ->select($this->templateDataFields)
             ->from($this->templateTable)
-            ->where($this->templateNameField . ' = :templateName', array('templateName' => $name))
-            ->queryRow();
+            ->where([$this->templateNameField => $name])
+            ->one();
         return $template;
     }
 }

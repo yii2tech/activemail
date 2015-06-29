@@ -5,8 +5,8 @@ namespace yii2tech\tests\unit\activemail;
 use yii2tech\activemail\TemplateStoragePhp;
 
 /**
- * Unit test for {@link StoragePhp}
- * @see StoragePhp
+ * Unit test for [[TemplateStoragePhp]]
+ * @see TemplateStoragePhp
  */
 class TemplateStoragePhpTest extends TestCase
 {
