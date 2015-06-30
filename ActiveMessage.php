@@ -18,7 +18,7 @@ use yii\base\Model;
  * For each mail sending event, which appears in the application, the child class of ActiveMessage
  * should be created:
  * <code>
- * namespace app\mail\ar;
+ * namespace app\mail\active;
  *
  * use yii2tech\activemail\ActiveMessage;
  * use Yii;
@@ -53,11 +53,12 @@ use yii\base\Model;
  *
  * @see yii2tech\activemail\TemplateStorage
  *
- * @property mixed $from public alias of {@link _from}
- * @property mixed $to public alias of {@link _to}
- * @property mixed $subject public alias of {@link _subject}
- * @property mixed $bodyText public alias of {@link _bodyText}
- * @property mixed $bodyHtml public alias of {@link _bodyHtml}
+ * @property string|array $from message sender email address.
+ * @property string|array $replyTo the reply-to address.
+ * @property array $to message recipients.
+ * @property string $subject message subject.
+ * @property string $bodyText message plain text content.
+ * @property string $bodyHtml message HTML content.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -70,28 +71,33 @@ abstract class ActiveMessage extends Model
     const EVENT_BEFORE_SEND = 'beforeSend';
 
     /**
-     * @var mixed message sender.
+     * @var string|array message sender email address.
      */
     private $_from;
     /**
-     * @var mixed message receiver(s).
+     * @var string|array the reply-to address.
+     */
+    private $_replyTo;
+    /**
+     * @var array message recipients.
      */
     private $_to;
     /**
-     * @var string message subject
+     * @var string message subject.
      */
     private $_subject;
     /**
-     * @var string message plain text body
+     * @var string message plain text content.
      */
     private $_bodyText;
     /**
-     * @var string message HTML body
+     * @var string message HTML content.
      */
     private $_bodyHtml;
 
+
     /**
-     * @param mixed $from
+     * @param string|array $from message sender email address.
      */
     public function setFrom($from)
     {
@@ -99,7 +105,7 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @return mixed
+     * @return string|array message sender email address.
      */
     public function getFrom()
     {
@@ -110,7 +116,26 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @param mixed $to
+     * @param array|string $replyTo the reply-to address.
+     */
+    public function setReplyTo($replyTo)
+    {
+        $this->_replyTo = $replyTo;
+    }
+
+    /**
+     * @return array|string the reply-to address.
+     */
+    public function getReplyTo()
+    {
+        if (empty($this->_replyTo)) {
+            $this->_replyTo = $this->defaultReplyTo();
+        }
+        return $this->_replyTo;
+    }
+
+    /**
+     * @param array $to message recipients.
      */
     public function setTo($to)
     {
@@ -118,7 +143,7 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @return mixed
+     * @return array message recipients.
      */
     public function getTo()
     {
@@ -129,7 +154,7 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @param string $subject
+     * @param string $subject message subject.
      */
     public function setSubject($subject)
     {
@@ -137,7 +162,7 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @return string
+     * @return string message subject.
      */
     public function getSubject()
     {
@@ -148,7 +173,7 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @param string $bodyHtml
+     * @param string $bodyHtml message HTML content.
      */
     public function setBodyHtml($bodyHtml)
     {
@@ -156,7 +181,7 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @return string
+     * @return string message HTML content.
      */
     public function getBodyHtml()
     {
@@ -167,7 +192,7 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @param string $bodyText
+     * @param string $bodyText message plain text content.
      */
     public function setBodyText($bodyText)
     {
@@ -175,7 +200,7 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * @return string
+     * @return string message plain text content.
      */
     public function getBodyText()
     {
@@ -217,22 +242,30 @@ abstract class ActiveMessage extends Model
     abstract public function defaultFrom();
 
     /**
-     * @return string default receiver
+     * @return string the default reply-to address.
+     */
+    public function defaultReplyTo()
+    {
+        return $this->getFrom();
+    }
+
+    /**
+     * @return string default receiver email address.
      */
     abstract public function defaultTo();
 
     /**
-     * @return string default subject
+     * @return string default message subject
      */
     abstract public function defaultSubject();
 
     /**
-     * @return string default HTML body
+     * @return string default message HTML content.
      */
     abstract public function defaultBodyHtml();
 
     /**
-     * @return string default plain text body
+     * @return string default message plain text content.
      */
     public function defaultBodyText()
     {
@@ -324,7 +357,7 @@ abstract class ActiveMessage extends Model
             ->setSubject($this->getSubject())
             ->setTo($this->getTo())
             ->setFrom($this->getFrom())
-            ->setReplyTo($this->getFrom());
+            ->setReplyTo($this->getReplyTo());
 
         if ($this->beforeSend($mailMessage)) {
             return $this->getMailer()->send($mailMessage);
