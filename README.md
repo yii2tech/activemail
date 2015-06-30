@@ -1,7 +1,8 @@
-Install Extension for Yii 2
-===========================
+ActiveMail Extension for Yii 2
+==============================
 
-This extension provides.
+This extension provides 'active mail message' concept implementation for Yii2.
+Active message is a model, which knows all necessary data for self composition and can send itself.
 
 For license information check the [LICENSE](LICENSE.md)-file.
 
@@ -13,7 +14,7 @@ For license information check the [LICENSE](LICENSE.md)-file.
 Requirements
 ------------
 
-This extension requires.
+This extension requires any implementation of the Yii2 mailer, such as [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer).
 
 
 Installation
@@ -35,8 +36,63 @@ or add
 
 to the require section of your composer.json.
 
+> Note: you should install particular mailer extension such as 'yiisoft/yii2-swiftmailer' separately.
+
 
 Usage
 -----
 
-This extension provides
+This extension provides 'active mail message' concept implementation for Yii2.
+Active message is a model, which knows all necessary data for self composition and can send itself.
+
+For example:
+
+```php
+namespace app\mail\active;
+
+use yii2tech\activemail\ActiveMessage;
+use Yii;
+
+class ContactUs extends ActiveMessage
+{
+    public $name;
+    public $email;
+    public $message;
+    public $subject;
+
+    public function rules()
+    {
+        return [
+            [$this->attributes, 'required'],
+            ['email', 'email'],
+        ];
+    }
+
+    public function defaultFrom()
+    {
+        return Yii::$app->params['applicationEmail'];
+    }
+
+    public function defaultTo()
+    {
+        return Yii::$app->params->mail['adminEmail'];
+    }
+
+    public function defaultSubject()
+    {
+        return 'Contact: {subject}';
+    }
+
+    public function defaultBodyHtml()
+    {
+        return <<<BODY
+Email: <a href="mailto:{email}">{email}</a><br>
+Name: {name}<br>
+<hr>
+{subject}
+<hr>
+{message}
+BODY;
+    }
+}
+```

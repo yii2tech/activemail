@@ -17,7 +17,8 @@ use yii\base\Model;
  *
  * For each mail sending event, which appears in the application, the child class of ActiveMessage
  * should be created:
- * <code>
+ *
+ * ```php
  * namespace app\mail\active;
  *
  * use yii2tech\activemail\ActiveMessage;
@@ -45,11 +46,20 @@ use yii\base\Model;
  *         return 'Contact message';
  *     }
  * }
- * </code>
+ * ```
  *
- * Once message created and populated it can be sent via [[send()]] method.
+ * Once message created and populated it can be sent via [[send()]] method:
  *
- * ActiveMessage supports using of the mail templates provided by [[yii2tech\activemail\TemplateStorage]].
+ * ```php
+ * use app\mail\active\Notification;
+ *
+ * $message = new Notification();
+ * $message->to = 'some@domain.com';
+ * $message->message = 'Notification message';
+ * $message->send();
+ * ```
+ *
+ * ActiveMessage supports using of the mail templates provided by [[\yii2tech\activemail\TemplateStorage]].
  *
  * @see yii2tech\activemail\TemplateStorage
  *
