@@ -80,5 +80,7 @@ class TemplateStorageDbTest extends TestCase
 
         $template = $storage->getTemplate('test');
         $this->assertNotEmpty($template);
+
+        $this->assertNull($storage->getTemplate('unexistingTemplate'));
     }
 } 

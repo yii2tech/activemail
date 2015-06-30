@@ -10,7 +10,7 @@ namespace yii2tech\activemail;
 use yii\base\Component;
 
 /**
- * TemplateStorage
+ * TemplateStorage is a base class for active message template storages.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -20,7 +20,7 @@ abstract class TemplateStorage extends Component
     /**
      * @var array found templates cache in format: templateName => templateData
      */
-    private $_templates = array();
+    private $_templates = [];
 
     /**
      * Returns the template data fro the given name.

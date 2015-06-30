@@ -8,9 +8,22 @@
 namespace yii2tech\activemail;
 
 use Yii;
+use yii\base\Exception;
 
 /**
- * TemplateStoragePhp
+ * TemplateStoragePhp is an active mail template storage based on PHP files.
+ * All template files should be stored under [[templatePath]] directory.
+ * File name should match the template name.
+ * File should return an array with template data, for example:
+ *
+ * ```php
+ * <?php
+ * // file 'contact.php'
+ * return [
+ *     'subject' => 'Contact message',
+ *     'htmlBody' => 'Contact inquiry:<br>{message}',
+ * ];
+ * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -19,46 +32,24 @@ class TemplateStoragePhp extends TemplateStorage
 {
     /**
      * @var string template file path.
-     * If not set - "application.mail.template" will be used.
+     * By default "@app/mail/templates" is used.
      */
-    private $_templatePath;
+    public $templatePath = '@app/mail/templates';
 
-    /**
-     * @param string $templatePath
-     */
-    public function setTemplatePath($templatePath)
-    {
-        $this->_templatePath = $templatePath;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplatePath()
-    {
-        if ($this->_templatePath === null) {
-            $this->_templatePath = $this->defaultTemplatePath();
-        }
-        return $this->_templatePath;
-    }
-
-    /**
-     * @return string default template file path.
-     */
-    protected function defaultTemplatePath()
-    {
-        return Yii::getPathOfAlias('application.mail.templates');
-    }
 
     /**
      * @inheritdoc
      */
     protected function findTemplate($name)
     {
-        $templateFile = $this->getTemplatePath() . DIRECTORY_SEPARATOR . $name . '.php';
+        $templateFile = Yii::getAlias($this->templatePath) . DIRECTORY_SEPARATOR . $name . '.php';
         if (file_exists($templateFile)) {
-            return $templateFile;
+            $template = require $templateFile;
+            if (!is_array($template)) {
+                throw new Exception("Unable to get template from file '{$templateFile}': file should return array, '" . gettype($template) . "' returned instead.");
+            }
+            return $template;
         }
         return null;
     }
-} 
+}

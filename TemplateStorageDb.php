@@ -13,7 +13,18 @@ use yii\db\Query;
 use yii\di\Instance;
 
 /**
- * TemplateStorageDb
+ * TemplateStorageDb is an active mail template storage based on relational database.
+ * It stores template data into the database table named [[templateTable]].
+ * Migration code for such table creation could be following:
+ *
+ * ```php
+ * $this->createTable('EmailTemplate', [
+ *     'name' => 'string',
+ *     'subject' => 'string',
+ *     'bodyHtml' => 'text',
+ *     'PRIMARY KEY (name)',
+ * ]);
+ * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -41,6 +52,7 @@ class TemplateStorageDb extends TemplateStorage
      */
     public $templateNameField = 'name';
 
+
     /**
      * @inheritdoc
      */
@@ -61,6 +73,10 @@ class TemplateStorageDb extends TemplateStorage
             ->from($this->templateTable)
             ->where([$this->templateNameField => $name])
             ->one();
+
+        if ($template === false) {
+            return null;
+        }
         return $template;
     }
 }
