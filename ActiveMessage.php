@@ -10,6 +10,7 @@ namespace yii2tech\activemail;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\helpers\StringHelper;
 
 /**
  * ActiveMessage represents particular mail sending process.
@@ -295,19 +296,15 @@ abstract class ActiveMessage extends Model
      */
     public function templateName()
     {
-        $className = get_class($this);
-        if (($pos = mb_strrpos($className, '\\')) !== false) {
-            return mb_substr($className, $pos + 1);
-        }
-        return $className;
+        return StringHelper::basename(get_class($this));
     }
 
     /**
-     * Returns the hints for template data.
+     * Returns the hints for template placeholders.
      * Hints are can be used, while composing edit form for the mail template.
-     * @return array template data hints in format: (name => hint)
+     * @return array template placeholder hints in format: placeholderName => hint
      */
-    public function templateDataHints()
+    public function templatePlaceholderHints()
     {
         return [];
     }
@@ -353,7 +350,7 @@ abstract class ActiveMessage extends Model
         if ($runValidation && !$this->validate()) {
             throw new InvalidConfigException('Unable to send message: ' . $this->getErrorSummary());
         }
-        $data = $this->composeTemplateData();
+        $data = $this->templatePlaceholders();
 
         //$this->beforeCompose($mailMessage, $data);
 
@@ -377,12 +374,13 @@ abstract class ActiveMessage extends Model
     }
 
     /**
-     * Composes data, which should be used to parse template.
+     * Composes placeholders, which should be used to parse template.
+     * Those placeholders will also be passed to the mail view, while composition.
      * By default this method returns all current message model attributes.
-     * Child classes may override this method to customize template data.
-     * @return array data to be passed to templates.
+     * Child classes may override this method to customize template placeholders.
+     * @return array template placeholders in format: placeholderName => value.
      */
-    protected function composeTemplateData()
+    protected function templatePlaceholders()
     {
         return $this->getAttributes();
     }

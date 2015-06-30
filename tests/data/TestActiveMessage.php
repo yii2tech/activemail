@@ -18,7 +18,7 @@ class TestActiveMessage extends ActiveMessage
         return 'Test default body HTML';
     }
 
-    protected function composeTemplateData()
+    protected function templatePlaceholders()
     {
         return array(
             'subjectPlaceholder' => 'subjectParsed',
