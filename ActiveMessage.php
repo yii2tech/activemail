@@ -288,7 +288,7 @@ abstract class ActiveMessage extends Model
      */
     public function viewName()
     {
-        return 'activeMessage';
+        return '@yii2tech/activemail/views/activeMessage.php';
     }
 
     /**
