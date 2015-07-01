@@ -19,6 +19,7 @@ class TemplateStorageMongoDbTest extends TestCase
         }
         if (!class_exists('yii\mongodb\Connection')) {
             $this->markTestSkipped('"yiisoft/yii2-mongodb" extension required.');
+            return;
         }
 
         $this->mockApplication([
