@@ -24,13 +24,13 @@ class TemplateStorageActiveRecord extends TemplateStorage
      */
     public $activeRecordClass;
     /**
-     * @var array list of mail template collection fields, which should compose the template data.
+     * @var array list of ActiveRecord attributes, which should compose the template data.
      * Only these fields will be selected while querying template row.
-     * You may adjust fields list according to the actual collection data.
+     * You may adjust fields list according to the actual ActiveRecord class.
      */
     public $templateDataAttributes = ['subject', 'bodyHtml'];
     /**
-     * @var string name of the mail template collection field, which stores the template name.
+     * @var string name of the ActiveRecord attribute, which stores the template name.
      */
     public $templateNameAttribute = 'name';
 
