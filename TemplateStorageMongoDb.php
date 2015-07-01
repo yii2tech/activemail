@@ -15,7 +15,7 @@ use yii\mongodb\Query;
  * TemplateStorageMongoDb is an active mail template storage based on MongoDB.
  * It stores template data into the collection named [[templateCollection]].
  *
- * This storage requires 'yiisoft/yii2-mongodb' extension installed.
+ * This storage requires [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb) extension installed.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0

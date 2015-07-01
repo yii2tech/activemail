@@ -1,7 +1,7 @@
 {
     "name": "yii2tech/activemail",
     "description": "Project installation support extension for the Yii2 framework",
-    "keywords": ["yii2", "mail", "email", "active", "model"],
+    "keywords": ["yii2", "mail", "email", "active", "model", "template", "db", "database", "mongodb"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
@@ -20,7 +20,8 @@
         "yiisoft/yii2": "*"
     },
     "suggest": {
-        "yiisoft/yii2-swiftmailer": "you need this package, if you wish to setup crontab during project installation"
+        "yiisoft/yii2-swiftmailer": "actual mailer implementation such as this is required",
+        "yiisoft/yii2-mongodb": "you need this package, if you wish to store email templates in MongoDB"
     },
     "autoload": {
         "psr-4": { "yii2tech\\activemail\\": "" }
