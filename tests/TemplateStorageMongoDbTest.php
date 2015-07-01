@@ -14,14 +14,6 @@ class TemplateStorageMongoDbTest extends TestCase
 
     public function setUp()
     {
-        if (!extension_loaded('mongo')) {
-            $this->markTestSkipped('mongo PHP extension required.');
-        }
-        if (!class_exists('yii\mongodb\Connection')) {
-            $this->markTestSkipped('"yiisoft/yii2-mongodb" extension required.');
-            return;
-        }
-
         $this->mockApplication([
             'components' => [
                 'mongodb' => $this->getDb()
@@ -42,6 +34,15 @@ class TemplateStorageMongoDbTest extends TestCase
     protected function getDb()
     {
         if ($this->_db === null) {
+            if (!extension_loaded('mongo')) {
+                $this->markTestSkipped('mongo PHP extension required.');
+                return null;
+            }
+            if (!class_exists('yii\mongodb\Connection')) {
+                $this->markTestSkipped('"yiisoft/yii2-mongodb" extension required.');
+                return null;
+            }
+
             $this->_db = new Connection([
                 'dsn' => 'mongodb://travis:test@localhost:27017',
                 'defaultDatabaseName' => 'yii2test',
