@@ -14,7 +14,8 @@ use yii\di\Instance;
 use yii\helpers\FileHelper;
 
 /**
- * TemplateModelFinder
+ * TemplateModelFinder allows finding active messages and template models.
+ * It could be useful while creating administration panel for the mail template management.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -39,6 +40,8 @@ class TemplateModelFinder extends Component
     /**
      * @var string name of the ActiveRecord class, which should be used for template finding.
      * This class should match [[\yii\db\ActiveRecordInterface]] interface.
+     * If not set and [[mailTemplateStorage]] refers to [[TemplateStorageActiveRecord]], this value as well as
+     * [[templateDataAttributes]] and [[templateNameAttribute]] will be copied from the storage instance.
      */
     public $activeRecordClass;
     /**
@@ -78,7 +81,7 @@ class TemplateModelFinder extends Component
     {
         $activeMessageNamespace = trim($this->activeMessageNamespace, '\\');
         if (empty($this->activeMessageFilePath)) {
-            $activeMessageFilePath = Yii::getAlias('@' . str_replace('\\', '/', $this->activeMessageNamespace));
+            $activeMessageFilePath = Yii::getAlias('@' . str_replace('\\', DIRECTORY_SEPARATOR, $this->activeMessageNamespace));
         } else {
             $activeMessageFilePath = Yii::getAlias($this->activeMessageFilePath);
         }
