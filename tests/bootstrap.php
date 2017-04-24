@@ -13,3 +13,5 @@ require_once(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
 Yii::setAlias('@yii2tech/tests/unit/activemail', __DIR__);
 Yii::setAlias('@yii2tech/activemail', dirname(__DIR__));
+
+require_once(__DIR__ . '/compatibility.php');
