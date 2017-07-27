@@ -1,5 +1,10 @@
-ActiveMail Extension for Yii 2
-==============================
+<p align="center">
+    <a href="https://github.com/yii2tech" target="_blank">
+        <img src="https://avatars2.githubusercontent.com/u/12951949" height="100px">
+    </a>
+    <h1 align="center">ActiveMail Extension for Yii 2</h1>
+    <br>
+</p>
 
 This extension provides 'active mail message' concept implementation for Yii2.
 Active message is a model, which knows all necessary data for self composition and can send itself.
@@ -325,11 +330,11 @@ class MailTemplateController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
         }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 }
 ```
