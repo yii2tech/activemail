@@ -19,6 +19,12 @@
     "require": {
         "yiisoft/yii2": "*"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "suggest": {
         "yiisoft/yii2-swiftmailer": "actual mailer implementation such as this is required",
         "yiisoft/yii2-mongodb": "you need this package, if you wish to store email templates in MongoDB"
